@@ -75,10 +75,9 @@ class User{
         int userID;
         string userName;
         string userEmail;
-    
-    public:
+        static int nextUserID; // static for unique IDs
 
-        int nextUserID = 1; //counter for unique userid
+    public:
 
     //Setters
         void setUserID(int userID){
@@ -122,9 +121,33 @@ class User{
     }
 };
 
-int main(){
+// Define static member outside the class
+int User::nextUserID = 1;
 
-//  TEST USER SIGNUP
+void login(const vector<User>& users){
+    string loginName, loginEmail;
+    cout << "Enter your name: ";
+    getline(cin, loginName);
+    cout << "Enter your email: ";
+    getline(cin, loginEmail);
+
+    bool isLoginValid = false;
+    for (const auto& user : users) {
+        if (user.getUserName() == loginName && user.getUserEmail() == loginEmail) {
+            isLoginValid = true;
+            break;
+        }
+    }
+
+    if (isLoginValid) {
+        cout << "Login successful!" << endl;
+    } else {
+        cout << "Login failed. User not found." << endl;
+    }
+}
+
+void testSignup(){
+    // TEST USER SIGNUP
 
     vector<User> users;
 
@@ -135,9 +158,7 @@ int main(){
     newUser.signup();
     users.push_back(newUser);
 
-//*/
-
-//*     TEST DISPLAY USER INFO AFTER SIGNUP
+    // TEST DISPLAY USER INFO AFTER SIGNUP
 
     // Example: print the user ID of the first user
     if (!users.empty()) {
@@ -146,10 +167,28 @@ int main(){
         cout<< users[0].getUserEmail()<<endl;
 
 
-         cout << "User ID: " << users[1].getUserID() << endl;
+        cout << "User ID: " << users[1].getUserID() << endl;
         cout << users[1].getUserName()<<endl;
         cout<< users[1].getUserEmail()<<endl;
     }
-//*/
+}
 
+
+
+int main() {
+    vector<User> users;
+
+    // Signup process (add as many users as you want)
+    User newUser;
+    newUser.signup();
+    users.push_back(newUser);
+
+    // You can repeat signup if you want more users
+    // newUser.signup();
+    // users.push_back(newUser);
+
+    // Login process
+    login(users);
+
+    return 0;
 }
