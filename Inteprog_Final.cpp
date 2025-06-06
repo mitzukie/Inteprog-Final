@@ -274,21 +274,42 @@ bool isValidCredential(const string& input) {
 // Sign-up function with validations (username, password, and email)
 User* signUp() {
     cout << "\n--- Sign Up ---" << endl;
-    string username = readNonEmptyLine("Enter a username (min. 3 characters): ");
-    if (!isValidCredential(username)) {
-        throw runtime_error("Username must be at least 3 characters long.");
-    }
-    // Check if username exists
-    for (const auto& cred : credentials) {
-        if (cred.username == username) {
-            throw runtime_error("Username already exists. Please try logging in.");
+
+    // Username input and validation
+    string username;
+    while (true) {
+        username = readNonEmptyLine("Enter a username (min. 3 characters): ");
+        if (!isValidCredential(username)) {
+            cout << "Username must be at least 3 characters long." << endl;
+            continue;
         }
+        // Check if username exists
+        bool exists = false;
+        for (const auto& cred : credentials) {
+            if (cred.username == username) {
+                exists = true;
+                break;
+            }
+        }
+        if (exists) {
+            cout << "Username already exists. Please try logging in." << endl;
+            continue;
+        }
+        break;
     }
-    string password = readNonEmptyLine("Enter a password (min. 3 characters): ");
-    if (!isValidCredential(password)) {
-        throw runtime_error("Password must be at least 3 characters long.");
+
+    // Password input and validation
+    string password;
+    while (true) {
+        password = readNonEmptyLine("Enter a password (min. 3 characters): ");
+        if (!isValidCredential(password)) {
+            cout << "Password must be at least 3 characters long." << endl;
+            continue;
+        }
+        break;
     }
-    
+
+    // Email input and validation
     string email;
     while (true) {
         email = readNonEmptyLine("Enter your email address: ");
@@ -296,10 +317,10 @@ User* signUp() {
             break;
         cout << "Invalid email format. Please try again." << endl;
     }
-    
+
     credentials.push_back({username, password, email});
     cout << "Sign-up successful!" << endl;
-    
+
     User* newUser = new User(username);
     newUser->setEmail(email);
     return newUser;
@@ -348,8 +369,8 @@ void mainMenu(){
 
 int main() {
     try {
-        User* user = nullptr;
-        while (true) { // Outer loop: allows re-authentication after sign out
+        User* user = nullptr; 
+        while (true) { 
             // Authentication loop
             while (user == nullptr) {
                 cout << "Welcome! Please choose an option:" << endl;
@@ -358,21 +379,44 @@ int main() {
                 int authChoice = readInt("Enter choice (1 or 2): ", 1, 2);
 
                 if (authChoice == 1) {
-                    signUp();
-                    cout << "You may now log in with your new credentials.\n";
+                    bool signedUp = false;
+                    while (!signedUp) {
+                        try {
+                            signUp();
+                            cout << "You may now log in with your new credentials.\n";
+                            signedUp = true;
+                        } catch (const exception& e) {
+                            cout << e.what() << endl;
+                            // Loop continues, user can try again
+                        }
+                    }
                 } else {
                     if (credentials.empty()) {
                         cout << "No users exist yet. Please sign up first.\n";
                     } else {
-                        user = logIn();
+                        try {
+                            user = logIn();
+                        } catch (const exception& e) {
+                            cout << e.what() << endl;
+                            // user remains nullptr, so the loop continues
+                        }
                     }
                 }
             }
 
             vector<Product> catalog = {
-                Product(1, "Laptop", 999.99),
-                Product(2, "Mouse", 25.50),
-                Product(3, "Keyboard", 45.00)
+                Product(1, "Laptop", 32456.75),
+                Product(2, "Mouse", 876.54),
+                Product(3, "Keyboard", 1234.56),
+                Product(4, "Headset", 5432.11 ),
+                Product(5, "Earphones", 245.55),
+                Product(6, "Controller", 999.99),
+                Product(7, "Mousepad", 350.55),
+                Product(8, "Laptop Cooler", 999.99),
+                Product(9, "USB Flash Drive", 500.00),
+                Product(10, "Gaming Chair: Monobloc Edition", 4444.44),
+                Product(11, "Gaming Monitor 24hz", 2400.24)
+
             };
 
             Cart cart;
@@ -444,7 +488,7 @@ int main() {
                         while (inCartMenu) {
                             cart.showCart();
                             cout << "\nCart Options:\n";
-                            cout << "1. Remove an item\n";
+                            cout << "1. Remove an item/Update Quantity\n";
                             cout << "2. Proceed to Checkout\n";
                             cout << "3. Back to Main Menu\n";
                             int cartChoice = readInt("Choose an option: ", 1, 3);
