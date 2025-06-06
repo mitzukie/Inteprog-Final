@@ -271,7 +271,6 @@ bool isValidCredential(const string& input) {
     return input.length() >= 3;
 }
 
-// Sign-up function with validations (username, password, and email)
 User* signUp() {
     cout << "\n--- Sign Up ---" << endl;
 
@@ -387,7 +386,6 @@ int main() {
                             signedUp = true;
                         } catch (const exception& e) {
                             cout << e.what() << endl;
-                            // Loop continues, user can try again
                         }
                     }
                 } else {
@@ -398,7 +396,6 @@ int main() {
                             user = logIn();
                         } catch (const exception& e) {
                             cout << e.what() << endl;
-                            // user remains nullptr, so the loop continues
                         }
                     }
                 }
@@ -554,6 +551,7 @@ int main() {
                                     generateReceipt(*user, cart, paymentMethod);
                                     inCartMenu = false;
                                     cart = Cart();
+                                    cart.setCatalog(catalog);
                                     break;
                                 }
                                 case 3:
