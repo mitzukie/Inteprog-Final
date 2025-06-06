@@ -4,6 +4,7 @@
 #include <limits>
 #include <stdexcept>
 #include <cctype>
+#include <algorithm>
 
 using namespace std;
 
@@ -450,7 +451,7 @@ int main() {
 
                             switch (cartChoice) {
                                 case 1: {
-                                    cout << "\nWould you like to (1) Remove an item or (2) Update item quantity? ";
+                                    cout << "\nWould you like to (1) Remove an item or (2) Update item quantity? " <<endl;
                                     int action = readInt("Enter 1 to remove, 2 to update quantity: ", 1, 2);
                                     int prodId = readInt("Enter Product ID: ", 1, (int)catalog.size());
                                     if (action == 1) {
